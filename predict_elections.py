@@ -26,14 +26,14 @@ def calculate_pollster_errors(state_polls,state_results):
 # calculate aggregate polling data using weighted averages across individual polls
 def calc_pollster_weighted_spreads(state_polls,by_month=False):
   state_polls_averages = state_polls.copy()
-  state_polls_averages["Pollster_Weight"] = state_polls_averages["PollsterError"] ** -2
-  state_polls_averages["PredSpread"] = state_polls_averages["Pollster_Weight"] * state_polls_averages["Spread"]
+  state_polls_averages["PollsterWeight"] = state_polls_averages["PollsterError"] ** -2
+  state_polls_averages["PredSpread"] = state_polls_averages["PollsterWeight"] * state_polls_averages["Spread"]
 
   if by_month:
     state_polls_averages = state_polls_averages.groupby(["State","Month"]).sum().reset_index()
   else:
     state_polls_averages = state_polls_averages.groupby(["State"]).sum().reset_index()
-  state_polls_averages['PredSpread'] = state_polls_averages['PredSpread'] / state_polls_averages['Pollster_Weight']
+  state_polls_averages['PredSpread'] = state_polls_averages['PredSpread'] / state_polls_averages['PollsterWeight']
 
   if by_month:
     state_polls_averages = state_polls_averages[['State','Month','PredSpread']]
